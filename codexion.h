@@ -41,7 +41,7 @@ typedef struct s_sim
     long long   time_to_refactor;
     int compiles_required;
     long long   dongle_cooldown;
-    ch  ar    *scheduler;
+    char    *scheduler;
 
     long long start_time;
     int simulation_ended;
