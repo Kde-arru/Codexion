@@ -1,15 +1,15 @@
 #include "codexion.h"
 
-int error_exist(char *str)
+int error_exit(char *str)
 {
-    printf("Error: %s\n");
+    printf("Error: %s\n", str);
     return (1);
 }
 
 int is_valid_number(char *str)
 {
     int i = 0;
-    while(str[i])
+    while (str[i])
     {
         if (str[i] < '0' || str[i] > '9')
             return (0);

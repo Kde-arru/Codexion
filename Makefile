@@ -1,19 +1,21 @@
 NAME = codexion
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread
-SRCS = main.c \
-		src/routine.c \
-		src/utils.c \
-		src/utils.c
+CFLAGS = -Wall -Wextra -Werror -pthread -I.
+
+SRCS		= src/main.c \
+			  src/init.c \
+			  src/routine.c \
+			  src/utils.c
+
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-		$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o %@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
