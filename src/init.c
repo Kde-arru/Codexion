@@ -49,7 +49,7 @@ int init_simulation(t_sim *sim)
         return (error_exit("Error on put memory (malloc)."));
 
     i = 0;
-    while (i < sim.number_of_coders)
+    while (i < sim->number_of_coders)
     {
         sim->dongles[i].id = i + 1;
         sim->dongles[i].available_at = 0;

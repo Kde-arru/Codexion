@@ -65,6 +65,9 @@ void *coder_routine(void *arg)
         print_status(coder->sim, coder->id, "is compiling");
         usleep(coder->sim->time_to_compile * 1000);
         drop_dongles(coder);
+        pthread_mutex_lock(&(coder->sim->sim_mutex));
+        coder->compiles_done++;
+        pthread_mutex_unlock(&(coder->sim->sim_mutex));
         print_status(coder->sim, coder->id, "is resting");
         usleep(10000);
     }
@@ -75,12 +78,14 @@ void *monitor_routine(void *arg)
 {
     t_sim       *sim;
     int         i;
+    int         all_compiled;
     long long   current_time;
 
     sim = (t_sim *)arg;
     while (1)
     {
         i = -1;
+        all_compiled = 1;
         while (++i < sim->number_of_coders)
         {
             pthread_mutex_lock(&(sim->sim_mutex));
@@ -94,8 +99,22 @@ void *monitor_routine(void *arg)
                 pthread_mutex_unlock(&(sim->sim_mutex));
                 return (NULL);
             }
+            if (sim->compiles_required != -1 && sim->coders[i].compiles_done < sim->compiles_required)
+                all_compiled = 0;
+
             pthread_mutex_unlock(&(sim->sim_mutex));
         }
+        if (sim->compiles_required != -1 && all_compiled)
+        {
+            pthread_mutex_lock(&(sim->sim_mutex));
+            sim->simulation_ended = 1;
+            pthread_mutex_unlock(&(sim->sim_mutex));
+            return (NULL);
+        }
+
+        if (check_simulation_ended(sim))
+            return (NULL);
+
         usleep(1000);
     }
     return (NULL);
